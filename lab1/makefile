@@ -1,4 +1,4 @@
-CFLAGS  = -Wall -Wextra -std=c11 -D_POSIX_C_SOURCE=200809L
+CFLAGS  = -Wall -Wextra
 
 all: mycat mygrep
 
@@ -14,7 +14,12 @@ mygrep: mygrep.o
 mygrep.o: mygrep.c
 	cc $(CFLAGS) -c mygrep.c -o mygrep.o
 
+mychmod: mychmod.o
+	cc mychmod.o -o mychmod
+
+mygrep.o: mychmod.c
+	cc $(CFLAGS) -c mychmod.c -o mychmod.o
 clean:
-	rm -f mycat mycat.o mygrep mygrep.o
+	rm -f mycat mycat.o mygrep mygrep.o mychmod mychmod.o
 
 .PHONY: clean
