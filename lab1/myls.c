@@ -23,6 +23,7 @@ typedef struct
     time_t mod_time;
     char* name;
     char linkname[512];
+    blkcnt_t blocks;
 
 } content;
 
@@ -39,9 +40,11 @@ content process_piece(struct dirent *entry, char* path)
     piece.name = entry->d_name;
     piece.size = st.st_size;
     piece.mode = st.st_mode;
+    piece.blocks = st.st_blocks;
     piece.owner = getpwuid(st.st_uid)->pw_name;
     piece.group = getgrgid(st.st_gid)->gr_name;
     piece.links = st.st_nlink;
+
     if(S_ISLNK(st.st_mode))
     {
         ssize_t n = readlink(fullpath, piece.linkname, sizeof(piece.linkname) - 1);
@@ -156,6 +159,7 @@ int main(int argc, char** argv)
     content *content_list = NULL;
     size_t cap = 0;
     size_t len = 0;
+    blkcnt_t total_blocks = 0;
 
     while ((entry = readdir(directory)) != NULL) {
         if (len + 1 >= cap)
@@ -176,6 +180,7 @@ int main(int argc, char** argv)
             continue;
         }
         content_list[len] = process_piece(entry, (optind < argc ? argv[argc-1]:"."));
+        total_blocks += content_list[len].blocks;
         len++;
     }
     /* print all */
@@ -185,6 +190,7 @@ int main(int argc, char** argv)
 
     if(long_listing)
     {
+        printf("total: %ld\n", total_blocks/2);
         print_long(content_list, len);
     }
     else
