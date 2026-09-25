@@ -38,7 +38,7 @@ int main(int argc, char** argv)
                 break;
 
             default:
-                fprintf(stderr, "Unknown option: -%c\n", optopt);
+                fprintf(stderr, "%s: Unknown option: -%c\n", PROGRAM_NAME, optopt);
                 exit(EXIT_FAILURE);
             }
         }
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 
         if (fp == NULL)
         {
-            fprintf(stderr, "%s: %s\n", infile, strerror(errno));
+            fprintf(stderr, "%s: %s: %s\n",PROGRAM_NAME, infile, strerror(errno));
             exit_status = EXIT_FAILURE;
             optind++;
             continue;

@@ -1,6 +1,6 @@
 CFLAGS  = -Wall -Wextra
 
-all: mycat mygrep
+all: mycat mygrep mychmod myls
 
 mycat: mycat.o
 	cc mycat.o -o mycat
@@ -17,9 +17,21 @@ mygrep.o: mygrep.c
 mychmod: mychmod.o
 	cc mychmod.o -o mychmod
 
-mygrep.o: mychmod.c
+mychmod.o: mychmod.c
 	cc $(CFLAGS) -c mychmod.c -o mychmod.o
+
+myls: myls.o
+	cc myls.o -o myls
+
+myls.o: myls.c
+	cc $(CFLAGS) -c myls.c -o myls.o
+
+
+
 clean:
-	rm -f mycat mycat.o mygrep mygrep.o mychmod mychmod.o
+	rm -f mycat mycat.o mygrep mygrep.o mychmod mychmod.o myls myls.o
+
+
+
 
 .PHONY: clean
