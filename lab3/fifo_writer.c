@@ -17,7 +17,7 @@ void current_time(char *buf, size_t size)
     struct tm *tm_info = localtime(&now);
     if (tm_info == NULL || strftime(buf, size, "%H:%M:%S", tm_info) == 0)
     {
-        snprintf(buf, size, "time:error");
+        snprintf(buf, size, "time:error)");
     }
 }
 

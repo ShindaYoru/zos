@@ -41,7 +41,7 @@ int main()
     }
 
     sleep(DELAY_SEC);
-
+    
     ssize_t n = read(fd, buffer, BUF_SIZE - 1);
     if (n == -1)
     {
