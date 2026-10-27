@@ -26,12 +26,7 @@ myls: myls.o
 myls.o: myls.c
 	cc $(CFLAGS) -c myls.c -o myls.o
 
-
-
 clean:
 	rm -f mycat mycat.o mygrep mygrep.o mychmod mychmod.o myls myls.o
-
-
-
 
 .PHONY: clean
