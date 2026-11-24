@@ -29,28 +29,39 @@ typedef struct
 
 content process_piece(struct dirent *entry, char* path, bool *ok)
 {
-    
     content piece;
     *ok = true;
-
     char fullpath[PATH_MAX];
     snprintf(fullpath, sizeof(fullpath), "%s/%s", path, entry->d_name);
+
     struct stat st;
-        if (lstat(fullpath, &st) == -1) {
-            fprintf(stderr, "%s: Error reading stats of a file", PROGRAM_NAME);
+    if (lstat(fullpath, &st) == -1) {
+        fprintf(stderr, "%s: Error reading stats of a file", PROGRAM_NAME);
         *ok = false;
         return piece;
     }
-    strcpy(piece.name, entry->d_name);
-    piece.size = st.st_size;
-    piece.mode = st.st_mode;
-    piece.blocks = st.st_blocks;
-    strcpy(piece.owner, (getpwuid(st.st_uid)?getpwuid(st.st_uid)->pw_name:"?"));
-    strcpy(piece.group, (getgrgid(st.st_gid)?getgrgid(st.st_gid)->gr_name:"?"));
-    piece.links = st.st_nlink;
 
-    if(S_ISLNK(st.st_mode))
-    {
+    strcpy(piece.name, entry->d_name);
+    piece.size   = st.st_size;
+    piece.mode   = st.st_mode;
+    piece.blocks = st.st_blocks;
+    piece.links  = st.st_nlink;
+
+    struct passwd *pw = getpwuid(st.st_uid);
+    if (pw) {
+        strcpy(piece.owner, pw->pw_name);
+    } else {
+        sprintf(piece.owner, "%u", st.st_uid);
+    }
+
+    struct group *gr = getgrgid(st.st_gid);
+    if (gr) {
+        strcpy(piece.group, gr->gr_name);
+    } else {
+        sprintf(piece.group, "%u", st.st_gid);
+    }
+
+    if (S_ISLNK(st.st_mode)) {
         ssize_t n = readlink(fullpath, piece.linkname, sizeof(piece.linkname) - 1);
         if (n == -1) {
             perror("readlink");
@@ -58,9 +69,10 @@ content process_piece(struct dirent *entry, char* path, bool *ok)
             piece.linkname[n] = '\0';
         }
     }
+
     piece.mod_time = st.st_mtime;
     return piece;
-};
+}
 
 #include <sys/stat.h>
 

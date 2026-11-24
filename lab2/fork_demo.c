@@ -69,6 +69,15 @@ int main()
         perror("fork");
         exit(EXIT_FAILURE);
     }
+
+
+    if(child_pid == 0)
+    {
+        printf("Child process running...\n");
+        sleep(3);
+        printf("Child process finished...\n");
+    }
+
     if(child_pid > 0)
     {
         while ((wpid = wait(&status)) > 0)

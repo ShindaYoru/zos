@@ -55,5 +55,8 @@ int main()
     current_time(time_str, sizeof(time_str));
     printf("Reader time: %s\n", time_str);
     printf("Reader received: %s\n", buffer);
+
+
+    unlink(FIFO_PATH);
     return 0;
 }
